@@ -1,0 +1,9 @@
+body {
+    transform: scale(0.5, 0.5); /* Scale down body (and contained images) to 1/2 size to fit hex grid to browser screen */
+    user-select: none;
+    background-color: bisque;
+}
+
+body img {
+    position: absolute; /* Must use absolute positioning to layer images, z-index is automatically assigned in creation so no issues there (yet) */
+}
