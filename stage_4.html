@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Hexavore Stage 3</title>
+    <title>Hexavore Stage 4</title>
     <link rel="stylesheet" href="styles.css"> 
     <link rel="icon" href="./favicon.png" type="image/x-icon">
 </head>
@@ -271,7 +271,7 @@ hexagons.forEach(hex => {
                 document.body.style.backgroundColor = "#FF6600";
 
                 setTimeout(() => {
-                    window.location.href = "stage_4.html"; // Redirect to the next stage
+                    window.location.href = "you_win.html"; // Redirect to the next stage
                 }, 2000); // 2 second delay to let win sound play out before going to next stage
                 
             }
@@ -489,7 +489,6 @@ function bombExplode(q, r) {
 
 
     let startTime = Date.now();
-    localStorage.setItem('gameStartTime', startTime);
     console.log(startTime);
 
     </script>

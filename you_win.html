@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Win</title>
+    <link rel="stylesheet" href="you_win.css"> 
+    
+</head>
+<body>
+    <div class="container">
+        <h1>You Win!</h1>
+        <p id="time-display"></p> <!-- Display elapsed time -->
+        <ul id="leaderboard"></ul> <!-- Display leaderboard -->
+        <button type="button" id="restart-button">Restart</button>
+    </div>
+    
+</body>
+<script>
+    const song = new Audio("song.mp3");
+    song.volume = 0.5;
+
+    window.addEventListener('load', () => {
+        const storedTime = localStorage.getItem('audioTime');
+        song.currentTime = parseFloat(storedTime);
+        song.play();
+    });
+
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem('audioTime', song.currentTime);
+    });
+
+
+    let startTime = parseInt(localStorage.getItem('gameStartTime'));
+
+    if (startTime) {
+        let endTime = Date.now();
+        let elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
+        
+        // Display the elapsed time
+        document.getElementById('time-display').textContent = `Your time: ${elapsedTime} seconds`;
+
+        // Store the elapsed time in the leaderboard
+        let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+        leaderboard.push(parseFloat(elapsedTime));
+        
+        // Sort times in ascending order and keep only the top 5
+        leaderboard.sort((a, b) => a - b);
+        leaderboard = leaderboard.slice(0, 5);
+
+        // Update leaderboard in localStorage
+        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+
+        // Display the leaderboard
+        let leaderboardElement = document.getElementById('leaderboard');
+        leaderboard.forEach((time, index) => {
+        let listItem = document.createElement('li');
+        listItem.innerHTML = `${index + 1}. <span style="float: right">${time} s</span>`;
+        leaderboardElement.appendChild(listItem);
+        });
+
+        // Clear the start time from localStorage
+        localStorage.removeItem('gameStartTime');
+    } else {
+        document.getElementById('time-display').textContent = "Start time not found. Please start the game again.";
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+    // Select the button by its ID
+    const restartButton = document.getElementById('restart-button');
+    
+    // Add a click event listener
+    restartButton.addEventListener('click', () => {
+        // Redirect to the desired HTML page (e.g., 'index.html')
+        window.location.href = 'index.html'; // Replace with your target HTML file or path
+    });
+});
+</script>
+</html>

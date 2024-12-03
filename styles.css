@@ -158,6 +158,14 @@ header {
     }
 }
 
+.goblin {
+    background-image: url('goblin.png'); /* Adjust the path as needed */
+    background-size: contain;  /* Scale the image to fit inside the hexagon */
+    background-repeat: no-repeat;
+    background-position: center; /* Center the bomb image */
+    background-color: transparent; /* Optional: Clear the background */
+}
+
 .shockwave {
     position: absolute;
     width: calc(var(--s) * 1.1547);/* Larger than hexagon */
