@@ -230,7 +230,7 @@ hexagons.forEach(hex => {
 
             clearInterval(obstacleTimer); // DO THIS TO MAKE SURE USER HAS TIME TO CLAIM SPOT BEFORE LEAF DOES
             setTimeout(() => {
-                obstacleTimer = setInterval(growObstacle, 200);
+                obstacleTimer = setInterval(growObstacle, 1500);
             }, 5); // 5 ms delay before leaf can fill a new spot
 
             hexInner.style.backgroundColor = "#ffffff";
