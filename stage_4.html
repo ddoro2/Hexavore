@@ -84,7 +84,6 @@
                     hexagon.appendChild(hexInner);
                     rowContainer.appendChild(hexagon);
                     
-                    console.log(`Create Hexagon From: Q = ${5+j-i}, R = ${i}`);
                 }
 
                 mainContainer.appendChild(rowContainer);
@@ -118,12 +117,10 @@
 
 
                     
-                    console.log(`Create Hexagon From: Q = ${0+j}, R = ${i}`);
                 }
 
                 mainContainer.appendChild(rowContainer);
             }
-            console.log(hexMap);
             
         }
 
@@ -135,9 +132,11 @@
         // Check if the hexagon exists in the grid
         if (hexMap[wallKey]) {
             const wallHex = hexMap[wallKey].element;
+            wallHex.className = "hexagon";
             const wallHexInner = wallHex.querySelector('.hexagon-inner');
             
             if (q === 5 && r === 5) {
+                hexMap[wallKey].state = -3;
                 let red = 191; // Start with very light red
                 let green = 119;
                 let blue = 246;
@@ -178,11 +177,12 @@
                 startColorTransition();
             } else {
                 wallHexInner.style.backgroundColor = "lightgray"; // Wall color for other coordinates
+                hexMap[wallKey].state = -2;
             }
             
             // Disable interaction
-            wallHex.style.pointerEvents = "none";
-            hexMap[wallKey].state = -2;
+            
+           
         }
     });
 }
@@ -229,6 +229,8 @@ hexagons.forEach(hex => {
 
         // Get the current state of the hexagon
         let currentState = hexMap[`${q},${r}`].state;
+
+        console.log("CURRENT STATE: " + currentState);
 
         // Check if the hexagon color is in the colorStates array (except white)
         if (colorStates.includes(currentHexColor) && currentHexColor !== "#ffffff") {
@@ -336,7 +338,6 @@ function createShockwave(q, r) {
 
     // Remove the shockwave after the animation completes
     setTimeout(() => {
-        console.log("Shockwave animation completed and removing element.");
         mainContainer.removeChild(shockwave); // Explicitly remove the shockwave from the container
     }, 1900);
     
@@ -409,9 +410,8 @@ function spreadLightBlueToNeighbors(q, r) {
     [parseInt(q) - 1, parseInt(r)],      // Top-left
     [parseInt(q) - 1, parseInt(r) + 1],  // Top-right
     ];
-    console.log(`Checking current = ${q}, R = ${r}`);
+
     neighbors.forEach(([neighborQ, neighborR]) => {
-        console.log(`Checking neighbor at: Q = ${neighborQ}, R = ${neighborR}`);
         // Check if the neighbor is within bounds
         if (hexMap[`${neighborQ},${neighborR}`]) {
             const neighborHex = hexMap[`${neighborQ},${neighborR}`].element;
@@ -437,9 +437,8 @@ function bombExplode(q, r) {
     [parseInt(q) - 1, parseInt(r)],      // Top-left
     [parseInt(q) - 1, parseInt(r) + 1],  // Top-right
     ];
-    console.log(`Checking current = ${q}, R = ${r}`);
+
     neighbors.forEach(([neighborQ, neighborR]) => {
-        console.log(`Checking neighbor at: Q = ${neighborQ}, R = ${neighborR}`);
         // Check if the neighbor is within bounds
         if (hexMap[`${neighborQ},${neighborR}`]) {
             const neighborHex = hexMap[`${neighborQ},${neighborR}`].element;
@@ -489,7 +488,6 @@ function bombExplode(q, r) {
 
 
     let startTime = Date.now();
-    console.log(startTime);
 
     </script>
     
