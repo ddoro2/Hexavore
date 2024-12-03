@@ -1,0 +1,188 @@
+@font-face {
+    font-family: 'ROG';
+    src: url('font/asusrog_regular.ttf') format('truetype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background-color: #DBD9D9;
+    transition: background-color 0.425s ease;
+}
+
+.bodyAnim {
+    animation-name: bodyScale;
+    animation-duration: 0.5s;
+}
+
+@keyframes bodyScale {
+    0% {
+        scale: 100%;
+    }
+    50% {
+        scale: 105%;
+    }
+    100% {
+        scale: 100%;
+    }
+}
+
+header {
+    font-family: 'ROG', sans-serif; 
+    color: #0008FF; 
+    font-size: 2em; 
+    text-align: center;
+    margin-top: 20px;
+}
+
+.main {
+    justify-content: center;
+    --s: 65px;
+    --border-size: 1px;
+    margin-top: 140px;
+}
+
+.container {
+    display: flex;
+    justify-content: center; /* Centers items horizontally */
+    align-items: center;     /* Centers items vertically */
+    font-size: 0;
+    position: relative;
+    gap: 0px;
+    margin-bottom: -20px;
+    
+}
+.vertex-0 { top: 0%; left: calc(50% + 10%); }
+.vertex-1 { top: 37.5%; left: 100%; }
+.vertex-2 { top: 87.5%; left: 100%; }
+.vertex-3 { top: 112.5%; left: 50%; }
+.vertex-4 { top: 87.5%; left: 0%; }
+.vertex-5 { top: 37.5%; left: 0%; }
+
+.hexagon {
+    width: calc(var(--s) + var(--border-size) * 2);
+    height: calc((var(--s) + var(--border-size) * 2) * 1.1547); 
+    display: inline-block;
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+    position: relative;
+    background-color: black; 
+    margin-left: -2px;
+    z-index: 1;
+}
+
+
+
+.hexagon-inner {
+    width: var(--s);
+    height: calc(var(--s) * 1.1547);
+    background-color: white; 
+    clip-path: inherit;
+    position: absolute;
+    top: var(--border-size);
+    left: var(--border-size);
+    z-index: 2;
+    
+}
+
+
+.orb {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: blue;
+    border-radius: 50%;
+    opacity: 1;
+    z-index: 4;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes grow {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+
+.triangle-start {
+    content: "";
+    position: absolute;
+    width: var(--s);
+    height: calc(var(--s) * 1.1547);
+    clip-path: polygon(0% 75%, 100% 75%, 50% 0%);
+    background-color: #f0ce24;
+    top: var(--border-size);
+    left: var(--border-size);
+    z-index: 3;
+}
+.triangle-goal {
+    content: "";
+    position: absolute;
+    width: var(--s);
+    height: calc(var(--s) * 1.1547);
+    clip-path: polygon(0% 25%, 50% 100%, 100% 25%);
+    background-color: #f07624;
+    top: var(--border-size);
+    left: var(--border-size);
+    z-index: 3;
+}
+.hexagon-inner:hover {
+    background-color: #f0f3f7; /* Slightly darker on hover */
+}
+
+.hexagon-inner {
+    transition: background-color 0.1s ease;
+}
+
+.triangleWin {
+    animation-duration: 4s;
+    animation-name: win;
+}
+
+@keyframes win {
+    from {
+        scale: 100%;
+    }
+    to {
+        scale: 800%;
+    }
+}
+
+.shockwave {
+    position: absolute;
+    width: calc(var(--s) * 1.1547);/* Larger than hexagon */
+    height: calc(var(--s) * 1.1547);
+    border: 2px solid rgba(144, 18, 240, 0.6);
+    border-radius: 50%; /* Circular shockwave */
+    
+    animation: shockwave-animation 2s infinite;
+    opacity: 0;
+    z-index: 3; /* Higher than the hexagon */
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    
+  }
+  
+  @keyframes shockwave-animation {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: scale(10); /* Expands farther out */
+      opacity: 0;
+    }
+  }
