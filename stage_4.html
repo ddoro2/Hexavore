@@ -460,7 +460,7 @@ gobImg.classList.add("goblin");
 goblinHex.querySelector('.hexagon-inner').appendChild(gobImg);
 
 var gobSound = new Audio("laugh.wav");
-gobSound.volume = 0.3;
+gobSound.volume = 0.65;
 
 function handleGoblin() {
     const hexes = Object.keys(hexMap).filter(key => hexMap[key].state >= -1 && !(key == "0,10"));
