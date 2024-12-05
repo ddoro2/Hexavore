@@ -12,7 +12,7 @@
 <body>
 
     <header>
-        <h1>Hexavore - FINAL</h1>
+        <h1>KILL THE GOBLIN TO BREAK THE BARRIERS</h1>
     </header>
     <div class="main" id="grid-container">
        
@@ -136,10 +136,12 @@
             const wallHexInner = wallHex.querySelector('.hexagon-inner');
             
             if (q === 5 && r === 5) {
-                hexMap[wallKey].state = -3;
-                let red = 191; // Start with very light red
-                let green = 119;
-                let blue = 246;
+                wallHexInner.classList.add('tower');
+                wallHexInner.style.transition = "background-color 0.3s ease";
+
+                let red = 244; // Start with very light purple
+                let green = 194;
+                let blue = 251;
                 const steps = 17;
                 const intervalTime = 1000; // 1 second intervals
 
@@ -153,8 +155,9 @@
                     const colorInterval = setInterval(() => {
                         if (stepCount < steps) {
                             // Gradually reduce red and green to intensify purple
-                            red -= 2.6;
-                            green -= 5.6;
+                            red -= 4.22;
+                            green -= 7;
+                            blue -= 0.45;
                             wallHexInner.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
                             stepCount++;
                         } else {
@@ -162,10 +165,10 @@
 
                             // After the transition completes, reset the color back to the original light purple
                             setTimeout(() => {
-                                wallHexInner.style.backgroundColor = `rgb(191, 119, 246)`; // Reset to very light purple
-                                red = 191;
-                                green = 119;
-                                blue = 246;
+                                wallHexInner.style.backgroundColor = `rgb(244, 194, 251)`; // Reset to very light purple
+                                red = 244;
+                                green = 194;
+                                blue = 251;
                                 // Start the color transition again after a short delay
                                 setTimeout(startColorTransition, 500); // Repeat after 500ms
                             }, 500); // Reset after a short delay (to allow the final color to be visible)
@@ -177,8 +180,9 @@
                 startColorTransition();
             } else {
                 wallHexInner.style.backgroundColor = "lightgray"; // Wall color for other coordinates
-                hexMap[wallKey].state = -2;
             }
+
+            hexMap[wallKey].state = -2;
             
             // Disable interaction
             
@@ -358,7 +362,13 @@ function startDecreasingColors() {
             const currentColor = window.getComputedStyle(hexInner).backgroundColor;
         
         // Check if the color is light blue (e.g., "rgb(173, 216, 230)" for light blue)
-        if (currentColor === "rgb(204, 238, 255)" || currentState == 999) {
+        if (key == "0,10") {
+            if (currentState != 0) {
+                hexMap[key].state = currentState - 1;
+                hexInner.style.backgroundColor = colorStates[currentState - 1]; // Update the color
+            }
+        }
+        else if (currentColor === "rgb(204, 238, 255)" || currentState == 999) {
             hexInner.style.backgroundColor = "#ffffff";  // Change color to white
             hexMap[key].state = -1;                     // Reset state to 0
         } else if (currentState > 0 && currentState < 10) {
@@ -381,7 +391,13 @@ function startDecreasingColors() {
                 const currentColor = window.getComputedStyle(hexInner).backgroundColor;
         
         // Check if the color is light blue (e.g., "rgb(173, 216, 230)" for light blue)
-        if (currentColor === "rgb(204, 238, 255)" || currentState == 999) {
+        if (key == "0,10") {
+            if (currentState != 0) {
+                hexMap[key].state = currentState - 1;
+                hexInner.style.backgroundColor = colorStates[currentState - 1]; // Update the color
+            }
+        }
+        else if (currentColor === "rgb(204, 238, 255)" || currentState == 999) {
             hexInner.style.backgroundColor = "#ffffff";  // Change color to white
             hexMap[key].state = -1;                     // Reset state to 0
         } else if (currentState > 0 && currentState < 10) {
@@ -427,8 +443,55 @@ function spreadLightBlueToNeighbors(q, r) {
     });
 }
 
+function destroyBarriers() {
+    const barrierKeys = Object.keys(hexMap).filter(key => hexMap[key].state == -2 && !(key == "5,5"));
+    for (var i = 0; i < barrierKeys.length; i++) {
+        const key = barrierKeys[i];
+        hexMap[key].state = -1;
+        hexMap[key].element.querySelector('.hexagon-inner').style.backgroundColor = "#ffffff";
+    }
+}
+
+var goblinHex = hexMap["10,4"].element;
+var gobImg = new Image();
+gobImg.src = "gobgif.gif";
+gobImg.classList.add("goblin");
+
+goblinHex.querySelector('.hexagon-inner').appendChild(gobImg);
+
+var gobSound = new Audio("laugh.wav");
+gobSound.volume = 0.3;
+
+function handleGoblin() {
+    const hexes = Object.keys(hexMap).filter(key => hexMap[key].state >= -1 && !(key == "0,10"));
+
+    if (hexes.length > 0) {
+        const randomHexagonKey = hexes[Math.floor(Math.random() * hexes.length)];
+        const hexagon = hexMap[randomHexagonKey].element;
+
+        goblinHex.querySelector('.hexagon-inner').removeChild(gobImg);
+
+        if (hexMap[randomHexagonKey].state >= 0 && hexMap[randomHexagonKey].state < 10) {
+            gobSound.load();
+            gobSound.play();
+
+            hexMap[randomHexagonKey].state = -1;
+            hexagon.querySelector('.hexagon-inner').style.backgroundColor = "#ffffff";
+        }
+
+        hexagon.querySelector('.hexagon-inner').appendChild(gobImg);
+        goblinHex = hexagon;
+    }
+}
+
+var goblinTimer = setInterval(handleGoblin, 5000); // NEEDS TO BE CLEARED UPON KILL
+
 // Function to remove tiles in bomb explosion
 function bombExplode(q, r) {
+    const bombHex = hexMap[`${q},${r}`].element;
+    const bombInnerHex = bombHex.querySelector('.hexagon-inner');
+    bombInnerHex.classList.remove("bomb");
+
     const neighbors = [
     [parseInt(q) + 0, parseInt(r) + 1],  // Right
     [parseInt(q) + 1, parseInt(r)],      // Bottom-right
@@ -438,22 +501,43 @@ function bombExplode(q, r) {
     [parseInt(q) - 1, parseInt(r) + 1],  // Top-right
     ];
 
+    if (bombInnerHex.querySelector(".goblin")) {
+        goblinHex.querySelector('.hexagon-inner').removeChild(gobImg);
+        clearInterval(goblinTimer);
+        destroyBarriers();
+    }
+
     neighbors.forEach(([neighborQ, neighborR]) => {
         // Check if the neighbor is within bounds
         if (hexMap[`${neighborQ},${neighborR}`]) {
             const neighborHex = hexMap[`${neighborQ},${neighborR}`].element;
             const neighborHexInner = neighborHex.querySelector('.hexagon-inner');
             const neighborState = hexMap[`${neighborQ},${neighborR}`].state;
+
+            if (neighborHexInner.querySelector(".goblin")) {
+                goblinHex.querySelector('.hexagon-inner').removeChild(gobImg);
+                clearInterval(goblinTimer);
+                destroyBarriers();
+            }
+
+            if (neighborState == 9999) {
+                neighborHexInner.classList.remove("bomb");
+            }
             
             // Only spread light blue to neighbors that are not yet colored
             if (neighborState != -2) {
-                neighborHexInner.style.backgroundColor = "#ffffff"; // White
-                hexMap[`${neighborQ},${neighborR}`].state = -1; // Mark as unoccupied
+                if (`${neighborQ},${neighborR}` == "0,10") {
+                    neighborHexInner.style.backgroundColor = "#cceeff";
+                    hexMap[`${neighborQ},${neighborR}`].state = 0;
+                }
+                else {
+                    neighborHexInner.style.backgroundColor = "#ffffff"; // White
+                    hexMap[`${neighborQ},${neighborR}`].state = -1; // Mark as unoccupied
+                }
             }
         }
     });
 }
-
         
     
         // GROW OBSTACLE HEX RANDOMLY IN GRID
@@ -467,8 +551,9 @@ function bombExplode(q, r) {
 
                 var obstacleType = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
 
-                if (obstacleType == 1) { // 1/10 times make a bomb
-                    hexagon.querySelector('.hexagon-inner').style.backgroundColor = "#ff0000"; // GREEN FOR LEAVES
+                if (obstacleType < 4) { // 3/10 times make a bomb
+                    hexagon.querySelector('.hexagon-inner').style.backgroundColor = "#ff0000"; // RED FOR BOMB
+                    hexagon.querySelector('.hexagon-inner').classList.add("bomb");
 
                     // MARK THIS HEXAGON AS BOMB
                     hexMap[randomHexagonKey].state = 9999; // 9999 IS BOMB OBSTACLE STATE
@@ -483,7 +568,7 @@ function bombExplode(q, r) {
         }
     
         // Set the interval to make the hexagon grow, currently at 750 ms
-        obstacleTimer = setInterval(growObstacle, 1500);
+        obstacleTimer = setInterval(growObstacle, 1300);
     });
 
 

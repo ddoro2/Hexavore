@@ -279,6 +279,10 @@ function spreadLightBlueToNeighbors(q, r) {
             const neighborHex = hexMap[`${neighborQ},${neighborR}`].element;
             const neighborHexInner = neighborHex.querySelector('.hexagon-inner');
             const neighborState = hexMap[`${neighborQ},${neighborR}`].state;
+
+            if (neighborState == 9999) {
+                neighborHexInner.classList.remove("bomb");
+            }
             
             // Only spread light blue to neighbors that are not yet colored
             if (neighborState === -1) {
@@ -291,6 +295,10 @@ function spreadLightBlueToNeighbors(q, r) {
 
 // Function to remove tiles in bomb explosion
 function bombExplode(q, r) {
+    const bombHex = hexMap[`${q},${r}`].element;
+    const bombInnerHex = bombHex.querySelector('.hexagon-inner');
+    bombInnerHex.classList.remove("bomb");
+
     const neighbors = [
     [parseInt(q) + 0, parseInt(r) + 1],  // Right
     [parseInt(q) + 1, parseInt(r)],      // Bottom-right
@@ -308,10 +316,20 @@ function bombExplode(q, r) {
             const neighborHexInner = neighborHex.querySelector('.hexagon-inner');
             const neighborState = hexMap[`${neighborQ},${neighborR}`].state;
             
+            if (neighborState == 9999) {
+                neighborHexInner.classList.remove("bomb");
+            }
+
             // Only spread light blue to neighbors that are not yet colored
             if (neighborState != -2) {
-                neighborHexInner.style.backgroundColor = "#ffffff"; // White
-                hexMap[`${neighborQ},${neighborR}`].state = -1; // Mark as unoccupied
+                if (`${neighborQ},${neighborR}` == "5,5") {
+                    neighborHexInner.style.backgroundColor = "#cceeff";
+                    hexMap[`${neighborQ},${neighborR}`].state = 0;
+                }
+                else {
+                    neighborHexInner.style.backgroundColor = "#ffffff"; // White
+                    hexMap[`${neighborQ},${neighborR}`].state = -1; // Mark as unoccupied
+                }
             }
         }
     });
@@ -330,8 +348,9 @@ function bombExplode(q, r) {
 
                 var obstacleType = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
 
-                if (obstacleType < 3) { // 2/10 times make a bomb
-                    hexagon.querySelector('.hexagon-inner').style.backgroundColor = "#ff0000"; // GREEN FOR LEAVES
+                if (obstacleType < 4) { // 2/10 times make a bomb
+                    hexagon.querySelector('.hexagon-inner').style.backgroundColor = "#ff0000"; // RED FOR BOMB
+                    hexagon.querySelector('.hexagon-inner').classList.add("bomb");
 
                     // MARK THIS HEXAGON AS BOMB
                     hexMap[randomHexagonKey].state = 9999; // 9999 IS BOMB OBSTACLE STATE
@@ -346,7 +365,7 @@ function bombExplode(q, r) {
         }
     
         // Set the interval to make the hexagon grow, currently at 750 ms
-        obstacleTimer = setInterval(growObstacle, 1500);
+        obstacleTimer = setInterval(growObstacle, 1400);
     });
 
 

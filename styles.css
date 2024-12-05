@@ -159,7 +159,26 @@ header {
 }
 
 .goblin {
-    background-image: url('goblin.png'); /* Adjust the path as needed */
+    user-select: none;
+    z-index: 10;
+    width: var(--s);
+    height: calc(var(--s) * 1.1547);
+    background-size: contain;  /* Scale the image to fit inside the hexagon */
+    background-repeat: no-repeat;
+    background-position: center; /* Center the bomb image */
+    background-color: transparent; /* Optional: Clear the background */
+}
+
+.tower {
+    background-image: url('tower.png'); /* Adjust the path as needed */
+    background-size: contain;  /* Scale the image to fit inside the hexagon */
+    background-repeat: no-repeat;
+    background-position: center; /* Center the bomb image */
+    background-color: transparent; /* Optional: Clear the background */
+}
+
+.bomb {
+    background-image: url('bomb.png'); /* Adjust the path as needed */
     background-size: contain;  /* Scale the image to fit inside the hexagon */
     background-repeat: no-repeat;
     background-position: center; /* Center the bomb image */
