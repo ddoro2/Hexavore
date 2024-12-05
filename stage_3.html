@@ -21,6 +21,7 @@
 <script>
     const song = new Audio("song.mp3");
     song.volume = 0.5;
+    song.loop = true;
 
     window.addEventListener('load', () => {
         const storedTime = localStorage.getItem('audioTime');
